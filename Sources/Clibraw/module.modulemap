@@ -1,0 +1,5 @@
+module Clibraw [system] {
+    umbrella header "Clibraw.h"
+    link "raw"
+    export *
+}
