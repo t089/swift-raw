@@ -62,7 +62,7 @@ public enum Image {
     case jpeg([UInt8])
     case bitmap(Bitmap)
     case jpegxl([UInt8])
-    case heif([UInt8])
+    case h265([UInt8])
     
     static func wrapping(_ image: UnsafeMutablePointer<libraw_processed_image_t>) -> Image {
         switch image.pointee.type {
@@ -91,7 +91,7 @@ public enum Image {
             
             defer { libraw_dcraw_clear_mem(image) }
             
-            return .heif(Array(buffer))
+            return .h265(Array(buffer))
         default:
             fatalError("Unexpected image format: \( image.pointee.type)")
         }

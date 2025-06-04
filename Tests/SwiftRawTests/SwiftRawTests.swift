@@ -55,15 +55,18 @@ class SwiftRawTests: XCTestCase {
             .appendingPathComponent("heif_thumb.cr3")
 
         let raw = try Raw.openFile(path: url.path)
-        try raw.unpack()
         try raw.unpackThumbnail()
 
         let thumbnail = try raw.renderThumbnail()
         switch thumbnail {
-            case .heif(let bytes):
+            case .h265(let bytes):
                 XCTAssertEqual(bytes.count, 739784)
+                try Data(bytes).write(to: url
+                    .deletingLastPathComponent()
+                    .appendingPathComponent("heif_thumb.h265"))
+                print("Wrote h265 thumbnail to \(url.deletingLastPathComponent().appendingPathComponent("heif_thumb.h265").path)")
             default:
-                XCTFail("Expected heif thumbnail, got \(thumbnail) instead")
+                XCTFail("Expected h265 thumbnail, got \(thumbnail) instead")
         }
     }
 
