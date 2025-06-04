@@ -49,4 +49,22 @@ class SwiftRawTests: XCTestCase {
         
     }
 
+    func testCR3WithHeif() throws {
+        let url = Bundle.module.resourceURL!
+            .appendingPathComponent("data")
+            .appendingPathComponent("heif_thumb.cr3")
+
+        let raw = try Raw.openFile(path: url.path)
+        try raw.unpack()
+        try raw.unpackThumbnail()
+
+        let thumbnail = try raw.renderThumbnail()
+        switch thumbnail {
+            case .heif(let bytes):
+                XCTAssertEqual(bytes.count, 739784)
+            default:
+                XCTFail("Expected heif thumbnail, got \(thumbnail) instead")
+        }
+    }
+
 }

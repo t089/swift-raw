@@ -61,6 +61,8 @@ public final class Bitmap {
 public enum Image {
     case jpeg([UInt8])
     case bitmap(Bitmap)
+    case jpegxl([UInt8])
+    case heif([UInt8])
     
     static func wrapping(_ image: UnsafeMutablePointer<libraw_processed_image_t>) -> Image {
         switch image.pointee.type {
@@ -74,6 +76,22 @@ public enum Image {
             defer { libraw_dcraw_clear_mem(image) }
             
             return .jpeg(Array(buffer))
+        case LIBRAW_IMAGE_JPEGXL:
+            let memData = shim_libraw_processed_image_get_data(image)
+
+            let buffer = UnsafeRawBufferPointer(start: memData, count: Int(image.pointee.data_size))
+            
+            defer { libraw_dcraw_clear_mem(image) }
+            
+            return .jpegxl(Array(buffer))
+        case LIBRAW_IMAGE_H265:
+            let memData = shim_libraw_processed_image_get_data(image)
+
+            let buffer = UnsafeRawBufferPointer(start: memData, count: Int(image.pointee.data_size))
+            
+            defer { libraw_dcraw_clear_mem(image) }
+            
+            return .heif(Array(buffer))
         default:
             fatalError("Unexpected image format: \( image.pointee.type)")
         }
